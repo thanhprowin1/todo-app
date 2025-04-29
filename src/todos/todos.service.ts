@@ -1,39 +1,34 @@
 import { Injectable } from '@nestjs/common';
-
-export interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-}
+import { SqliteService } from '../database/sqlite.service';
 
 @Injectable()
 export class TodosService {
-  private todos: Todo[] = [];
+  constructor(private readonly db: SqliteService) {}
 
-  create(title: string) {
-    const newTodo: Todo = {
-      id: Date.now(),
-      title,
-      completed: false,
-    };
-    this.todos.push(newTodo);
-    return newTodo;
+  async create(title: string) {
+    const query = `INSERT INTO Todos (Title, Completed) VALUES (?, ?)`;
+    const result = await this.db.query(query, [title, 0]);
+    return result;
   }
 
-  findAll() {
-    return this.todos;
+  async findAll() {
+    const query = `SELECT * FROM Todos`;
+    return await this.db.query(query);
   }
 
-  toggleCompleted(id: number) {
-    const todo = this.todos.find(t => t.id === id);
-    if (todo) {
-      todo.completed = !todo.completed;
-    }
-    return todo;
+  async toggleCompleted(id: number) {
+    const query = `
+      UPDATE Todos
+      SET Completed = CASE WHEN Completed = 1 THEN 0 ELSE 1 END
+      WHERE Id = ?
+    `;
+    await this.db.query(query, [id]);
+    return await this.db.query('SELECT * FROM Todos WHERE Id = ?', [id]);
   }
 
-  delete(id: number) {
-    this.todos = this.todos.filter(t => t.id !== id);
+  async delete(id: number) {
+    const query = `DELETE FROM Todos WHERE Id = ?`;
+    await this.db.query(query, [id]);
     return { deleted: true };
   }
 }
