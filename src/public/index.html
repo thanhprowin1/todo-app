@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head> //cấu hình
+  <meta charset="UTF-8" /> //hiển thị đúng tiếng việt có dấu
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />//
+  <title>Todo App</title>
+  <link rel="stylesheet" href="style.css" />
+</head> // cấu hình
+<body>
+  <div class="container"> //Tạo một khung giao diện
+    <h1>📋 Danh sách công việc</h1>
+
+    <form id="todo-form">
+      <input type="text" id="todo-input" placeholder="Nhập việc cần làm..." required />
+      <button type="submit">Thêm</button>
+    </form>
+
+    <ul id="todo-list"></ul>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
